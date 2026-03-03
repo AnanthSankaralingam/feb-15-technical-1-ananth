@@ -1,5 +1,5 @@
 import { Component } from '@/types/components';
-import { ComponentWrapper } from './ComponentWrapper';
+import { ComponentWrapper } from '@/components/preview/ComponentWrapper';
 
 interface PreviewPanelProps {
   components: Component[];

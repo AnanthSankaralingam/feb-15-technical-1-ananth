@@ -1,24 +1,59 @@
-import { Component } from '@/types/components';
+import { Alignment, Component } from '@/types/components';
+import { FormField, INPUT_CLASS } from '@/components/sidebar/editors/inputs/FormField';
+import { AlignmentSelect } from '@/components/sidebar/editors/inputs/AlignmentSelect';
+import { ColorPickerInput } from '@/components/sidebar/editors/inputs/ColorPickerInput';
 
 interface ButtonEditorProps {
   component: Component;
   onUpdate: (component: Component) => void;
 }
 
-export const ButtonEditor = ({ component }: ButtonEditorProps) => {
+export const ButtonEditor = ({ component, onUpdate }: ButtonEditorProps) => {
+  if (component.type !== 'button') return null;
+
+  const handleLabelChange = (value: string) => {
+    onUpdate({ ...component, props: { ...component.props, text: value } });
+  };
+
+  const handleAlignmentChange = (alignment: Alignment) => {
+    onUpdate({ ...component, container: { ...component.container, alignment } });
+  };
+
+  const handleBackgroundColorChange = (value: string) => {
+    onUpdate({
+      ...component,
+      props: {
+        ...component.props,
+        styling: { ...component.props.styling, backgroundColor: value || undefined },
+      },
+    });
+  };
+
   return (
     <div className="space-y-4">
-      <div className="bg-yellow-50 border-2 border-yellow-400 rounded-lg p-6">
-        <h3 className="text-lg font-bold text-yellow-900 mb-2">
-          🔘 Editor Not Implemented
-        </h3>
-        <p className="text-sm text-yellow-800 mb-4">
-          This editor needs to be implemented to allow editing button component properties.
-        </p>
-        <div className="bg-white rounded p-4 text-xs">
-          <p className="font-semibold mb-2">Current component data:</p>
-          <pre className="overflow-auto">{JSON.stringify(component, null, 2)}</pre>
-        </div>
+      <div className="bg-white border border-gray-200 rounded-lg p-6 space-y-4">
+        <FormField label="Button label">
+          <input
+            type="text"
+            className={INPUT_CLASS}
+            value={component.props.text}
+            onChange={(e) => handleLabelChange(e.target.value)}
+          />
+        </FormField>
+
+        <FormField label="Alignment">
+          <AlignmentSelect
+            value={component.container.alignment}
+            onChange={handleAlignmentChange}
+          />
+        </FormField>
+
+        <FormField label="Background color">
+          <ColorPickerInput
+            value={component.props.styling?.backgroundColor || ''}
+            onChange={handleBackgroundColorChange}
+          />
+        </FormField>
       </div>
     </div>
   );

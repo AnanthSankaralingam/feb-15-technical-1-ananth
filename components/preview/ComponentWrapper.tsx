@@ -1,7 +1,7 @@
 import { Component } from '@/types/components';
-import { TextRenderer } from './TextRenderer';
-import { ButtonRenderer } from './ButtonRenderer';
-import { ImageRenderer } from './ImageRenderer';
+import { TextRenderer } from '@/components/preview/TextRenderer';
+import { ButtonRenderer } from '@/components/preview/ButtonRenderer';
+import { ImageRenderer } from '@/components/preview/ImageRenderer';
 
 interface ComponentWrapperProps {
   component: Component;

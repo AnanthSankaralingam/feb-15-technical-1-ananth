@@ -1,24 +1,64 @@
-import { Component } from '@/types/components';
+import { Alignment, Component } from '@/types/components';
+import { FormField, INPUT_CLASS } from '@/components/sidebar/editors/inputs/FormField';
+import { AlignmentSelect } from '@/components/sidebar/editors/inputs/AlignmentSelect';
+import { PixelInput } from '@/components/sidebar/editors/inputs/PixelInput';
 
 interface TextEditorProps {
   component: Component;
   onUpdate: (component: Component) => void;
 }
 
-export const TextEditor = ({ component }: TextEditorProps) => {
+export const TextEditor = ({ component, onUpdate }: TextEditorProps) => {
+  if (component.type !== 'text') return null;
+
+  const handleTextChange = (value: string) => {
+    onUpdate({ ...component, props: { ...component.props, text: value } });
+  };
+
+  const handleAlignmentChange = (alignment: Alignment) => {
+    onUpdate({ ...component, container: { ...component.container, alignment } });
+  };
+
+  const handleFontSizeChange = (value: number | '') => {
+    const formatted = value === '' ? undefined : `${value}px`;
+    onUpdate({
+      ...component,
+      props: { ...component.props, styling: { ...component.props.styling, fontSize: formatted } },
+    });
+  };
+
+  const currentFontSize =
+    typeof component.props.styling?.fontSize === 'string'
+      ? parseInt(component.props.styling.fontSize, 10) || ''
+      : '';
+
   return (
     <div className="space-y-4">
-      <div className="bg-yellow-50 border-2 border-yellow-400 rounded-lg p-6">
-        <h3 className="text-lg font-bold text-yellow-900 mb-2">
-          📝 Editor Not Implemented
-        </h3>
-        <p className="text-sm text-yellow-800 mb-4">
-          This editor needs to be implemented to allow editing text component properties.
-        </p>
-        <div className="bg-white rounded p-4 text-xs">
-          <p className="font-semibold mb-2">Current component data:</p>
-          <pre className="overflow-auto">{JSON.stringify(component, null, 2)}</pre>
-        </div>
+      <div className="bg-white border border-gray-200 rounded-lg p-6 space-y-4">
+        <FormField label="Text content">
+          <textarea
+            className={INPUT_CLASS}
+            rows={4}
+            value={component.props.text}
+            onChange={(e) => handleTextChange(e.target.value)}
+          />
+        </FormField>
+
+        <FormField label="Alignment">
+          <AlignmentSelect
+            value={component.container.alignment}
+            onChange={handleAlignmentChange}
+          />
+        </FormField>
+
+        <FormField label="Font size">
+          <PixelInput
+            value={currentFontSize}
+            onChange={handleFontSizeChange}
+            min={8}
+            max={72}
+          />
+        </FormField>
       </div>
     </div>
   );
